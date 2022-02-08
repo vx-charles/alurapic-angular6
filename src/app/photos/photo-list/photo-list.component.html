@@ -1,0 +1,10 @@
+<ap-search
+  (onTyping)="filter = $event" [searchValue]="filter"> <!-- a medida que for digitando, dispara o evento onde o filter recebe o valor digitado -->
+</ap-search>
+
+<ap-photos [photos]="photos | filterByDescription: filter"></ap-photos>
+
+<ap-load-button
+  (click)="load()"
+  [hasMore]="hasMore">
+</ap-load-button>

@@ -1,0 +1,42 @@
+<h4 class="text-center">Login</h4>
+
+<!-- data bind "formGroup" que recebe os dados na variável -->
+<form [formGroup]="loginForm" class="form mt-4" (submit)="login()">
+  <div class="form-group">
+    <!-- #userNameInput - variável de template (pode ser qualquer nome) usado no "@ViewChild()" para guardar o ElementRef desse DOM. Pode ser usado em Componentes. -->
+    <input #userNameInput
+      class="form-control"
+      placeholder="user name"
+      autofocus
+      formControlName="userName"
+    />
+    <ap-vmessage
+      text="User name is required!"
+      *ngIf="loginForm.get('userName').errors?.required">
+    </ap-vmessage>
+  </div>
+
+  <div class="form-group">
+    <input
+      type="password"
+      class="form-control"
+      placeholder="password"
+      formControlName="password"
+    />
+    <ap-vmessage
+      text="Password is required!"
+      *ngIf="loginForm.get('password').errors?.required">
+    </ap-vmessage>
+  </div>
+
+  <!-- "loginForm.invalid" se um dos inputs for inválido, será desabilitado o botão -->
+  <button
+    [disabled]="loginForm.invalid"
+    type="submit"
+    class="btn btn-primary btn-block"
+  >
+    login
+  </button>
+</form>
+
+<p>Not a user? <a [routerLink]="['signup']">Register now</a></p>
