@@ -2,8 +2,11 @@ import { Injectable } from "@angular/core";
 import { HttpClient, HttpParams } from "@angular/common/http";
 import { Photo } from "./photo";
 import { PhotoComment } from "./photo-comment";
+import { catchError, map } from "rxjs/operators";
+import { of, throwError } from "rxjs";
+import { environment } from "src/environments/environment";
 
-const API = 'http://localhost:3000'
+const API = environment.apiUrl;
 
 @Injectable({
   providedIn: 'root' // Injeta e provê a classe para todos os componentes da aplicação 'root'.
@@ -29,7 +32,14 @@ export class PhotoService {
     formData.append('allowComments', allowComments ? 'true' : 'false'); // API backend passa uma string e não em boolean.
     formData.append('imageFile', file); // a API do backend espera uma propriedade imageFile
 
-    return this.http.post(API + '/photos/upload', formData);
+    return this.http.post(
+      API + '/photos/upload',
+      formData,
+      { 
+        observe: 'events', // observer: ''events - observa os eventos que ocorre no upload.
+        reportProgress: true // dá as informações dos eventos de progresso.
+      }
+    );
   }
 
   findById(photoId: number) {
@@ -47,4 +57,13 @@ export class PhotoService {
   removePhoto(photoId: number) {
     return this.http.delete(API + '/photos/' + photoId);
   }
+
+  like(photoId: number) {
+    return this.http
+      .post(API + '/photos/' + photoId + '/like', {}, { observe: 'response' }) // Post que não envia dado nenhum. Terceiro parâmetro tem acesso ao cabeçalho ou o status da resposta.
+      .pipe(map(res => true)) // retorna um observable do tipo boolean, e aplica true para cada valor emitido.
+      .pipe(catchError(err => { // quando der um erro na resposta, como se fosse try catch.
+        return err.status === '304' ? of(false) : throwError(err); // of(false) retorna um Observable boolean ou tipo qualquer.
+      }));
+    }
 }

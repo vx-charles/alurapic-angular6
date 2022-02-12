@@ -23,18 +23,34 @@ const routes: Routes = [
     component: PhotoListComponent,
     resolve: {
       photos: PhotoListResolver // componente vai ter acesso a propriedade "photos" com o resultado "PhotoListResolver"
+    },
+    data: { // dados extras que pode ser usado na rota, nesse caso vamos usar o title para as usar nas páginas.
+      title: "Timeline"
     }
   },
   {
     path: 'p/add',
     component: PhotoFormComponent,
-    canActivate: [AuthGuard]
+    canActivate: [AuthGuard],
+    data: {
+      title: "Photo upload"
+    }
   },
   {
     path: 'p/:photoId', // :photoId valor curinga, aceita qualquer valor na URL e exibe a página. Essa rota está parametrizada.
     component: PhotoDetailsComponent,
+    data: {
+      title: "Photo detail"
+    }
   },
-  { path: '**', component: NotFoundComponent } // path: '**' - qualquer página inexistente carrega a página de fotos.
+  { 
+    path: 'not-found',
+    component: NotFoundComponent,
+    data: {
+      title: "Not found"
+    }
+  },
+  { path: '**', redirectTo: 'not-found' } // path: '**' - qualquer página inexistente carrega a página de fotos.
 ];
 
 @NgModule({

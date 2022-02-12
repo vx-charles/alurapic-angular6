@@ -2,8 +2,9 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { tap } from 'rxjs/operators';
 import { UserService } from '../user/user.service';
+import { environment } from "src/environments/environment";
 
-const API_URL = 'http://localhost:3000';
+const API = environment.apiUrl;
 
 @Injectable({
   providedIn: 'root'
@@ -19,7 +20,7 @@ export class AuthService {
   authenticate(userName: string, password: string) { // devolve um Observable, logo tem q ter "return"
     return this.http
       .post(
-        API_URL + '/user/login',
+        API + '/user/login',
         { userName, password },
         { observe: 'response' } // para ter acesso ao cabeçalho e a tudo que tem na resposta.
       )
