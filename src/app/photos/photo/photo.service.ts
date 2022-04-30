@@ -35,7 +35,7 @@ export class PhotoService {
     return this.http.post(
       API + '/photos/upload',
       formData,
-      { 
+      {
         observe: 'events', // observer: ''events - observa os eventos que ocorre no upload.
         reportProgress: true // dá as informações dos eventos de progresso.
       }

@@ -1,24 +1,28 @@
-import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from "@angular/common/http";
-import { Injectable } from "@angular/core";
+import { HttpResponse, HttpRequest, HttpHandler, HttpSentEvent, HttpHeaderResponse, HttpProgressEvent, HttpUserEvent, HttpInterceptor } from "@angular/common/http";
+import { LoadingService } from "./loading.service";
 import { Observable } from "rxjs";
-import { TokenService } from "src/app/core/token/token.service";
+import { Injectable } from "@angular/core";
+import { tap } from "rxjs/operators";
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
+export class LoadingInterceptor implements HttpInterceptor {
 
-export class RequestInterceptor implements HttpInterceptor {
+    constructor(private loadingService: LoadingService) { }
 
-  constructor(private tokenService: TokenService){ }
-  intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-
-    if(this.tokenService.hasToken()) {
-      const token = this.tokenService.getToken();
-      req = req.clone({ // clona a requisição e modifica a requisição adicionando o x-access no Header
-        setHeaders: { // .clone({}) recebe um objeto js que tem propriedade setHeaders.
-          'x-access-token': token // add token no header
-        }
-      });
+    intercept(req: HttpRequest<any>, next: HttpHandler):
+      Observable<HttpSentEvent |
+      HttpHeaderResponse |
+      HttpProgressEvent |
+      HttpResponse<any> |
+      HttpUserEvent<any>> {
+        return next // é um render que lida com a requisição
+          .handle(req) // recebe a requuisição, mas não faz nada. Retorna um observable e pode encadear um pipe().
+          .pipe(tap(event => { // tap() - assim que os dados chegam, faz o subscribe.
+              if(event instanceof HttpResponse) { // Se for uma resposta ou chega uma resposta, fecha o loading.
+                  this.loadingService.stop();
+              } else {
+                  this.loadingService.start();
+              }
+          }))
     }
-    return next.handle(req); // qualquer requisição que for feita para o backend, será interceptado e o req recebe a requisição alterada do Header com token.
-  }
-
 }

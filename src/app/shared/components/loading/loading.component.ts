@@ -7,7 +7,8 @@ import { LoadingType } from "./loading-type";
 
 @Component({
   selector: 'ap-loading',
-  templateUrl: './loading.component.html'
+  templateUrl: './loading.component.html',
+  styleUrls: ['./loading.component.scss']
 })
 export class LoadingComponent implements OnInit {
 

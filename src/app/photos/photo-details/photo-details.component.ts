@@ -41,7 +41,7 @@ export class PhotoDetailsComponent implements OnInit {
       .subscribe(
         () => {
           this.alertService.success('Foto removed', true)
-          this.router.navigate(['/user', this.userService.getUserName()]); // volta pra tela de imagens do usuário com a mensagem alerta de sucesso.
+          this.router.navigate(['/user', this.userService.getUserName()], { replaceUrl: true }); // volta pra tela de imagens do usuário com a mensagem alerta de sucesso e o "relaceUrl: true" remove a rota do history da página da foto excluída.
         },
         err => {
           console.log(err);

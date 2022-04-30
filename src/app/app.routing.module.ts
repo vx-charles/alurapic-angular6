@@ -7,6 +7,7 @@ import { PhotoFormComponent } from "./photos/photo-form/photo-form.component";
 import { PhotoListComponent } from './photos/photo-list/photo-list.component';
 import { PhotoDetailsComponent } from "./photos/photo-details/photo-details.component";
 import { PhotoListResolver } from "./photos/photo-list/photo-list.resolver";
+import { PageGlobalErrorComponent } from "./errors/page-global-error/page-global-error.component";
 
 const routes: Routes = [
   {
@@ -43,11 +44,18 @@ const routes: Routes = [
       title: "Photo detail"
     }
   },
-  { 
+  {
     path: 'not-found',
     component: NotFoundComponent,
     data: {
       title: "Not found"
+    }
+  },
+  {
+    path: 'error',
+    component: PageGlobalErrorComponent,
+    data: {
+      title: "Error"
     }
   },
   { path: '**', redirectTo: 'not-found' } // path: '**' - qualquer página inexistente carrega a página de fotos.

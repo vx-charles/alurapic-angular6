@@ -1,11 +1,13 @@
-import { SignUpService } from './signup.service';
 import { Component, ElementRef, OnInit, ViewChild } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { Router } from '@angular/router';
+
+import { SignUpService } from './signup.service';
 import { lowerCaseValidator } from "src/app/shared/validators/lower-case.validator";
 import { UserNotTakenValidadorService } from "./user-not-taken.validator.service";
 import { NewUser } from "./new-user";
 import { PlatformDetectorService } from 'src/app/core/platform/platform-detector.service';
+import { userNamePassword } from './username-password.validator';
 
 @Component({
   templateUrl: './signup.component.html',
@@ -58,6 +60,8 @@ export class SignUpComponent implements OnInit {
           Validators.maxLength(14),
         ]
       ],
+    }, {
+      validator: userNamePassword // método que verifica se os dois campos tem valores iguais chamado de validador CrossField.
     })
 
     this.platformDetectorService.isPlatformBrowser() && // detecta se é no browser ou não. "&&" avalia a segunda condição, se for false, nem executa.
@@ -66,13 +70,16 @@ export class SignUpComponent implements OnInit {
   }
 
   signup() { // pegar os dados do formulário
-    const newUser = this.signupForm.getRawValue() as NewUser; // retorna um objeto com todos os dados do formulário, em vez de fazer um por um.
-    this.signUpService
-      .signup(newUser)
-      .subscribe(
-        () => this.router.navigate(['']),
-        err => console.log(err)
-      ) // vai para a página de início após o submit do form.
+
+    if(this.signupForm.valid && this.signupForm.pending){
+      const newUser = this.signupForm.getRawValue() as NewUser; // retorna um objeto com todos os dados do formulário, em vez de fazer um por um.
+      this.signUpService
+        .signup(newUser)
+        .subscribe(
+          () => this.router.navigate(['']),
+          err => console.log(err)
+        ) // vai para a página de início após o submit do form.
+    }
   }
 
 }
